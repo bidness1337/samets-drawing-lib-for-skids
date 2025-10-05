@@ -1,4 +1,4 @@
-local Library = 
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bidness1337/samets-drawing-lib-for-skids/refs/heads/main/source.lua"))()
 --
 local Window = Library:Window({
     Name = "   xddd   ",
@@ -387,4 +387,5 @@ end
 Library:Notification(string.format("Loaded in %.4f seconds", os.clock() - LoadingTick), 5, Library.Theme.Accent, {"rbxassetid://135757045959142", Color3.fromRGB(149, 255, 139)})
 --
 getgenv().Library = Library
+
 return Library
