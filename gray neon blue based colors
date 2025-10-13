@@ -54,13 +54,13 @@ local Library do
         
         Theme = {
             ["Background"] = FromRGB(128, 128, 128),
-            ["Inline"] = FromRGB(77, 77, 77),
-            ["Page Background"] = FromRGB({77, 77, 77),
-            ["Border"] = FromRGB(128, 128, 128),
+            ["Inline"] = FromRGB(128, 128, 128),
+            ["Page Background"] = FromRGB(128, 128, 128)),
+            ["Border"] = FromRGB(10, 10, 10),
             ["Outline"] = FromRGB(0, 0, 0),
             ["Accent"] = FromRGB(0, 162, 255),
-            ["Element"] = FromRGB(77, 77, 77),
-            ["Hovered Element"] = FromRGB(128, 128, 128),
+            ["Element"] = FromRGB(33, 33, 36),
+            ["Hovered Element"] = FromRGB(40, 40, 43),
             ["Text"] = FromRGB(215, 215, 215),
             ["Text Border"] = FromRGB(0, 0, 0)
         },
