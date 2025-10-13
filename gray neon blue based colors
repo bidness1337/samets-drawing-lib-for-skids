@@ -53,7 +53,7 @@ local Library do
         Flags = { },
         
         Theme = {
-            ["Background"] = FromRGB(77, 77, 77),
+            ["Background"] = FromRGB(128, 128, 128),
             ["Inline"] = FromRGB(77, 77, 77),
             ["Page Background"] = FromRGB({77, 77, 77),
             ["Border"] = FromRGB(128, 128, 128),
