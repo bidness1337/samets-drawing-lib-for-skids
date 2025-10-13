@@ -53,9 +53,9 @@ local Library do
         Flags = { },
         
         Theme = {
-            ["Background"] = FromRGB(128, 128, 128),
-            ["Inline"] = FromRGB(128, 128, 128),
-            ["Page Background"] = FromRGB(128, 128, 128)),
+            ["Background"] = FromRGB(15, 15, 20),
+            ["Inline"] = FromRGB(20, 20, 25),
+            ["Page Background"] = FromRGB(30, 30, 35),
             ["Border"] = FromRGB(10, 10, 10),
             ["Outline"] = FromRGB(0, 0, 0),
             ["Accent"] = FromRGB(0, 162, 255),
