@@ -55,7 +55,7 @@ local Library do
         Theme = {
             ["Background"] = FromRGB(48, 48, 48),
             ["Inline"] = FromRGB(36, 36, 36),
-            ["Page Background"] = FromRGB(30, 30, 35),
+            ["Page Background"] = FromRGB(36, 36, 36),
             ["Border"] = FromRGB(10, 10, 10),
             ["Outline"] = FromRGB(0, 0, 0),
             ["Accent"] = FromRGB(0, 162, 255),
