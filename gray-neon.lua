@@ -53,13 +53,13 @@ local Library do
         Flags = { },
         
         Theme = {
-            ["Background"] = FromRGB(0, 0, 0),
-            ["Inline"] = FromRGB(7, 7, 7),
-            ["Page Background"] = FromRGB(0, 0, 0),
-            ["Border"] = FromRGB(38, 10, 10),
+            ["Background"] = FromRGB(48, 48, 48),
+            ["Inline"] = FromRGB(36, 36, 36),
+            ["Page Background"] = FromRGB(36, 36, 36),
+            ["Border"] = FromRGB(10, 10, 10),
             ["Outline"] = FromRGB(0, 0, 0),
             ["Accent"] = FromRGB(0, 162, 255),
-            ["Element"] = FromRGB(7, 7, 7),
+            ["Element"] = FromRGB(33, 33, 36),
             ["Hovered Element"] = FromRGB(40, 40, 43),
             ["Text"] = FromRGB(215, 215, 215),
             ["Text Border"] = FromRGB(0, 0, 0)
