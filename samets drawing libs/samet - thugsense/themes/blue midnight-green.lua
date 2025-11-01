@@ -53,16 +53,16 @@ local Library do
         Flags = { },
         
         Theme = {
-            ["Background"] = FromRGB(0, 0, 0),
-            ["Inline"] = FromRGB(7, 7, 7),
-            ["Page Background"] = FromRGB(0, 0, 0),
-            ["Border"] = FromRGB(10, 10, 10),
-            ["Outline"] = FromRGB(0, 0, 0),
-            ["Accent"] = FromRGB(0, 162, 255),
-            ["Element"] = FromRGB(7, 7, 7),
-            ["Hovered Element"] = FromRGB(40, 40, 43),
-            ["Text"] = FromRGB(215, 215, 215),
+            ["Background"] = FromRGB(14, 17, 15),
+            ["Border"] = FromRGB(12, 12, 12),
+            ["Inline"] = FromRGB(20, 24, 21),
+            ["Hovered Element"] = FromRGB(37, 42, 45),
+            ["Page Background"] = FromRGB(25, 30, 26),
+            ["Outline"] = FromRGB(42, 49, 45),
+            ["Element"] = FromRGB(30, 36, 31),
+            ["Text"] = FromRGB(235, 235, 235),
             ["Text Border"] = FromRGB(0, 0, 0)
+            ["Accent"] = FromRGB(202, 243, 255)
         },
 
         MenuKeybind = Enum.KeyCode.Z, 
