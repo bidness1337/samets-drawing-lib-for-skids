@@ -1,3 +1,5 @@
+
+
 local LoadingTick = os.clock()
 
 if getgenv().Library then 
@@ -54,15 +56,15 @@ local Library do
         
         Theme = {
             ["Background"] = FromRGB(14, 17, 15),
-            ["Border"] = FromRGB(12, 12, 12),
             ["Inline"] = FromRGB(20, 24, 21),
-            ["Hovered Element"] = FromRGB(37, 42, 45),
             ["Page Background"] = FromRGB(25, 30, 26),
+            ["Border"] = FromRGB(12, 12, 12),
             ["Outline"] = FromRGB(42, 49, 45),
+            ["Accent"] = FromRGB(202, 243, 255),
             ["Element"] = FromRGB(30, 36, 31),
+            ["Hovered Element"] = FromRGB(37, 42, 45),
             ["Text"] = FromRGB(235, 235, 235),
             ["Text Border"] = FromRGB(0, 0, 0)
-            ["Accent"] = FromRGB(202, 243, 255)
         },
 
         MenuKeybind = Enum.KeyCode.Z, 
@@ -4758,4 +4760,5 @@ local Library do
 end
 
 getgenv().Library = Library
+
 return Library
