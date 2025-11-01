@@ -57,8 +57,8 @@ local Library do
             ["Inline"] = FromRGB(20, 20, 25),
             ["Page Background"] = FromRGB(30, 30, 35),
             ["Border"] = FromRGB(10, 10, 10),
-            ["Outline"] = FromRGB(0, 0, 0),
-            ["Accent"] = FromRGB(99, 99, 255),
+            ["Outline"] = FromRGB(27, 27, 32),
+            ["Accent"] = FromRGB(235, 157, 255),
             ["Element"] = FromRGB(33, 33, 36),
             ["Hovered Element"] = FromRGB(40, 40, 43),
             ["Text"] = FromRGB(215, 215, 215),
@@ -4759,3 +4759,4 @@ end
 
 getgenv().Library = Library
 return Library
+
