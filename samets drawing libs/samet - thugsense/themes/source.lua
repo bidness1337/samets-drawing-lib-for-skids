@@ -53,13 +53,13 @@ local Library do
         Flags = { },
         
         Theme = {
-            ["Background"] = FromRGB(0, 0, 0),
-            ["Inline"] = FromRGB(7, 7, 7),
-            ["Page Background"] = FromRGB(0, 0, 0),
+            ["Background"] = FromRGB(15, 15, 20),
+            ["Inline"] = FromRGB(20, 20, 25),
+            ["Page Background"] = FromRGB(30, 30, 35),
             ["Border"] = FromRGB(10, 10, 10),
-            ["Outline"] = FromRGB(0, 0, 0),
-            ["Accent"] = FromRGB(0, 162, 255),
-            ["Element"] = FromRGB(7, 7, 7),
+            ["Outline"] = FromRGB(27, 27, 32),
+            ["Accent"] = FromRGB(235, 157, 255),
+            ["Element"] = FromRGB(33, 33, 36),
             ["Hovered Element"] = FromRGB(40, 40, 43),
             ["Text"] = FromRGB(215, 215, 215),
             ["Text Border"] = FromRGB(0, 0, 0)
@@ -4758,4 +4758,5 @@ local Library do
 end
 
 getgenv().Library = Library
+
 return Library
