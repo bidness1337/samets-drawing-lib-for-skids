@@ -1,4 +1,4 @@
-local Library = loadstring(game:HttpGet(""))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bidness1337/samets-drawing-lib-for-skids/refs/heads/main/modified%20thugsense%20v2/lib%20source.lua"))()
 
 local Window = Library:Window({
     Name = "wahwahwah",
@@ -373,4 +373,5 @@ do -- Settings Tab
     end})
     Library:RefreshConfigsList(ConfigsListbox)
 end
+
 Library:Notification(string.format("Loaded in %.4f seconds", os.clock() - LoadingTick), 5, Library.Theme.Accent, {"rbxassetid://135757045959142", Color3.fromRGB(149, 255, 139)})
