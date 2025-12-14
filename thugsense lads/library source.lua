@@ -400,10 +400,10 @@ Tween:Create(Gui, TweenInfo.new(0.17, Enum.EasingStyle.Quart, Enum.EasingDirecti
                 return Font.new(getcustomasset(Library.Folders.Assets .. "/" .. Name .. ".json"))
             end
         end
-        CustomFont:New("Windows-XP-Tahoma", 200, "Regular", {
-            Url = "https://github.com/sametexe001/luas/raw/refs/heads/main/fonts/windows-xp-tahoma.ttf"
+        CustomFont:New("ProggyClean", 200, "Regular", {
+            Url = "https://raw.githubusercontent.com/ocornut/imgui/master/misc/fonts/ProggyClean.ttf"
         })
-        Library.Font = CustomFont:Get("Windows-XP-Tahoma")
+        Library.Font = CustomFont:Get("ProggyClean")
     end
     Library.Holder = Instances:Create("ScreenGui", {
         Parent = gethui(),
@@ -3970,4 +3970,5 @@ Tween:Create(Gui, TweenInfo.new(0.17, Enum.EasingStyle.Quart, Enum.EasingDirecti
 end
 --
 getgenv().Library = Library
+
 return Library
