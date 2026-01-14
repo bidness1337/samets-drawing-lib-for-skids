@@ -43,7 +43,7 @@ local Library do
         Theme = {
             ["Background"] = FromRGB(0, 0, 0),
 
-            ["Inline"] = FromRGB(0, 255, 0),
+            ["Inline"] = FromRGB(0, 0, 0),
 
             ["Page Background"] = FromRGB(0, 0, 0),
 
