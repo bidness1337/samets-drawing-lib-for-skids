@@ -51,7 +51,7 @@ local Library do
 
             ["Border"] = FromRGB(0, 0, 0),
 
-            ["Outline"] = FromRGB(77, 77, 77),
+            ["Outline"] = FromRGB(25, 25, 28),
 
             ["Accent"] = FromRGB(41, 128, 185),
 
