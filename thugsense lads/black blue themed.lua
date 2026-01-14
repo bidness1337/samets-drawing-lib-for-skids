@@ -43,15 +43,15 @@ local Library do
         Theme = {
             ["Background"] = FromRGB(0, 0, 0),
 
-            ["Inline"] = FromRGB(0, 0, 0),
+            ["Inline"] = FromRGB(0, 255, 0),
 
             ["Page Background"] = FromRGB(0, 0, 0),
 
             ["First"] = FromRGB(0, 0, 0),
 
-            ["Border"] = FromRGB(0, 0, 0),
+            ["Border"] = FromRGB(25, 25, 28),
 
-            ["Outline"] = FromRGB(77, 77, 77),
+            ["Outline"] = FromRGB(25, 25, 28),
 
             ["Accent"] = FromRGB(41, 128, 185),
 
