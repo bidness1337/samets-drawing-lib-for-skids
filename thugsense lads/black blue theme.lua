@@ -53,7 +53,7 @@ local Library do
 
             ["Outline"] = FromRGB(25, 25, 28),
 
-            ["Accent"] = FromRGB(41, 128, 185),
+            ["Accent"] = FromRGB(0, 0, 255),
 
             ["Element"] = FromRGB(0, 0, 0),
 
