@@ -3,7 +3,7 @@ local Window = Library:Window({
     FadeSpeed = 0.25
 })
 
-local Library = loadstring(game:HttpGet(""))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bidness1337/samets-drawing-lib-for-skids/refs/heads/main/ui/library.txt"))()
 
 local Watermark = Library:Watermark("wahwahwah ~ ".. os.date("%b %d %Y") .. " ~ ".. game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId).Name)
 local KeybindList = Library:KeybindList()
@@ -396,5 +396,6 @@ Library.CreateSettingsPage = function(self, Window, Watermark, KeybindList)
         end
     end
 end
+
 
 Library:Init()
