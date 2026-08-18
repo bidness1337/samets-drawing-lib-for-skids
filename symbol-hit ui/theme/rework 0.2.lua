@@ -1676,7 +1676,7 @@ local Library = (function()
             Library.ColorpickerWindow = ColorpickerWindowFunc({ZIndex = 5000})
         end
 
-        -- MODIFIED: WINDOW FUNCTION (Tabs at Bottom Left with proper spacing)
+        -- FIXED: WINDOW FUNCTION
         function Library.Window(self, cfg)
             cfg = cfg or {}
             cfg = Library.Config(cfg, {
@@ -1720,12 +1720,12 @@ local Library = (function()
                 Utility.New('UICorner', {
                     Name = 'UICorner',
                     Parent = Objects.Outline,
-                    CornerRadius = UDim.new(0, 5),
+                    CornerRadius = UDim.new(0, 8),
                 })
 
                 ZIndex = ZIndex + 1
                 
-                -- Top Bar with Title on the RIGHT side
+                -- TOP BAR
                 Objects.TopBar = Utility.New('Frame', {
                     Name = 'TopBar',
                     Size = UDim2.new(1, 0, 0, 0),
@@ -1740,21 +1740,21 @@ local Library = (function()
                 Utility.New('UICorner', {
                     Name = 'UICorner',
                     Parent = Objects.TopBar,
-                    CornerRadius = UDim.new(0, 5),
+                    CornerRadius = UDim.new(0, 8),
                 })
 
                 ZIndex = ZIndex + 1
                 
-                -- Title on the RIGHT side
+                -- Title centered
                 Objects.Title = Utility.New('TextLabel', {
                     Name = 'Title',
                     TextStrokeTransparency = 0.8,
                     BackgroundTransparency = 1,
-                    TextSize = cfg.fontsize + 6,
+                    TextSize = cfg.fontsize + 8,
                     TextYAlignment = Enum.TextYAlignment.Center,
-                    TextXAlignment = Enum.TextXAlignment.Right,
+                    TextXAlignment = Enum.TextXAlignment.Center,
                     FontFace = Library.Font,
-                    Size = UDim2.new(1, -20, 0, 0),
+                    Size = UDim2.new(1, 0, 0, 0),
                     AutomaticSize = Enum.AutomaticSize.Y,
                     Position = UDim2.new(0, 0, 0, 0),
                     Text = cfg.name,
@@ -1766,19 +1766,50 @@ local Library = (function()
                 
                 Utility.New('UIPadding', {
                     Name = 'UIPadding',
-                    PaddingTop = UDim.new(0, 8),
-                    PaddingBottom = UDim.new(0, 8),
+                    PaddingTop = UDim.new(0, 14),
+                    PaddingBottom = UDim.new(0, 14),
                     PaddingLeft = UDim.new(0, 10),
                     PaddingRight = UDim.new(0, 10),
                     Parent = Objects.TopBar,
                 })
                 
+                -- Build info bottom right
+                Objects.BuildInfo = Utility.New('TextLabel', {
+                    Name = 'BuildInfo',
+                    TextStrokeTransparency = 0.8,
+                    BackgroundTransparency = 1,
+                    TextSize = cfg.fontsize - 2,
+                    TextYAlignment = Enum.TextYAlignment.Center,
+                    TextXAlignment = Enum.TextXAlignment.Right,
+                    FontFace = Library.Font,
+                    Size = UDim2.new(1, -16, 0, 0),
+                    AutomaticSize = Enum.AutomaticSize.Y,
+                    Position = UDim2.new(0, 0, 1, -8),
+                    Text = 'build: dev 2026',
+                    Parent = Objects.Outline,
+                    ZIndex = ZIndex,
+                }, {
+                    TextColor3 = 'Dark Text',
+                })
+                
                 ZIndex = ZIndex + 1
                 
-                -- Page holder (main content area)
+                -- Top spacer
+                Objects.TopSpacer = Utility.New('Frame', {
+                    Name = 'TopSpacer',
+                    Size = UDim2.new(1, 0, 0, 12),
+                    BackgroundTransparency = 1,
+                    BorderSizePixel = 0,
+                    Parent = Objects.Outline,
+                    ZIndex = ZIndex,
+                })
+                
+                ZIndex = ZIndex + 1
+                
+                -- Page holder
                 Objects.PageHolder = Utility.New('Frame', {
                     Name = 'PageHolder',
-                    Size = UDim2.new(1, 0, 1, -42),
+                    Size = UDim2.new(1, 0, 1, -60),
                     Position = UDim2.new(0, 0, 0, 0),
                     BackgroundTransparency = 1,
                     BorderSizePixel = 0,
@@ -1788,20 +1819,32 @@ local Library = (function()
 
                 Utility.New('UIPadding', {
                     Name = 'UIPadding',
-                    PaddingLeft = UDim.new(0, 8),
-                    PaddingRight = UDim.new(0, 8),
-                    PaddingTop = UDim.new(0, 8),
-                    PaddingBottom = UDim.new(0, 8),
+                    PaddingLeft = UDim.new(0, 10),
+                    PaddingRight = UDim.new(0, 10),
+                    PaddingTop = UDim.new(0, 10),
+                    PaddingBottom = UDim.new(0, 10),
                     Parent = Objects.PageHolder,
                 })
 
                 Window.PageHolder = Objects.PageHolder
                 
-                -- Bottom bar for tabs (on the LEFT side)
+                -- Bottom spacer
+                Objects.BottomSpacer = Utility.New('Frame', {
+                    Name = 'BottomSpacer',
+                    Size = UDim2.new(1, 0, 0, 8),
+                    BackgroundTransparency = 1,
+                    BorderSizePixel = 0,
+                    Parent = Objects.Outline,
+                    ZIndex = ZIndex,
+                })
+                
+                ZIndex = ZIndex + 1
+                
+                -- BOTTOM BAR
                 Objects.BottomBar = Utility.New('Frame', {
                     Name = 'BottomBar',
-                    Size = UDim2.new(1, 0, 0, 42),
-                    Position = UDim2.new(0, 0, 1, -42),
+                    Size = UDim2.new(1, 0, 0, 46),
+                    Position = UDim2.new(0, 0, 1, -46),
                     BorderSizePixel = 0,
                     Parent = Objects.Outline,
                     ZIndex = ZIndex,
@@ -1812,23 +1855,23 @@ local Library = (function()
                 Utility.New('UICorner', {
                     Name = 'UICorner',
                     Parent = Objects.BottomBar,
-                    CornerRadius = UDim.new(0, 5),
+                    CornerRadius = UDim.new(0, 8),
                 })
                 
                 ZIndex = ZIndex + 1
                 
-                -- Bottom bar content with tabs on the LEFT
+                -- Bottom bar content with tabs
                 Objects.BottomBarContent = Utility.New('Frame', {
                     Name = 'BottomBarContent',
-                    Size = UDim2.new(1, -8, 1, -4),
-                    Position = UDim2.new(0, 4, 0, 2),
+                    Size = UDim2.new(1, -10, 1, -6),
+                    Position = UDim2.new(0, 5, 0, 3),
                     BackgroundTransparency = 1,
                     BorderSizePixel = 0,
                     Parent = Objects.BottomBar,
                     ZIndex = ZIndex,
                 })
                 
-                -- Layout for tabs (horizontal, left-aligned)
+                -- Tab layout
                 Objects.TabLayout = Utility.New('UIListLayout', {
                     Name = 'TabLayout',
                     FillDirection = Enum.FillDirection.Horizontal,
@@ -1841,7 +1884,7 @@ local Library = (function()
                 
                 ZIndex = ZIndex + 1
                 
-                -- Resize bar at bottom right
+                -- Resize bar
                 Objects.ResizeBar = Utility.New('Frame', {
                     Name = 'ResizeBar',
                     BorderSizePixel = 0,
@@ -1854,7 +1897,7 @@ local Library = (function()
 
                 Library.Resize(Objects.Outline, Objects.ResizeBar)
 
-                -- Dragging for the whole window
+                -- Dragging
                 Library.Dragging(Objects.Outline, Objects.TopBar)
                 
                 ZIndex = ZIndex + 1
@@ -1927,7 +1970,7 @@ local Library = (function()
             return setmetatable(Window, Library)
         end
         
-        -- MODIFIED: TAB FUNCTION (Tabs in Bottom Bar)
+        -- FIXED: TAB FUNCTION
         function Library.Tab(self, cfg)
             cfg = cfg or {}
             cfg = Library.Config(cfg, {
@@ -1946,7 +1989,6 @@ local Library = (function()
             local Objects = Tab.Objects
 
             do
-                -- Tab button in bottom bar (left-aligned)
                 Objects.Holder = Utility.New('Frame', {
                     Name = 'Holder',
                     BackgroundTransparency = 1,
@@ -1957,7 +1999,6 @@ local Library = (function()
                 })
                 ZIndex = ZIndex + 1
                 
-                -- Tab button outline
                 Objects.MainOutline = Utility.New('Frame', {
                     Name = 'MainOutline',
                     BorderSizePixel = 0,
@@ -1973,7 +2014,7 @@ local Library = (function()
                 Utility.New('UICorner', {
                     Name = 'UICorner',
                     Parent = Objects.MainOutline,
-                    CornerRadius = UDim.new(0, 5),
+                    CornerRadius = UDim.new(0, 6),
                 })
                 
                 ZIndex = ZIndex + 1
@@ -1998,7 +2039,7 @@ local Library = (function()
                 Utility.New('UICorner', {
                     Name = 'UICorner',
                     Parent = Objects.Background,
-                    CornerRadius = UDim.new(0, 5),
+                    CornerRadius = UDim.new(0, 6),
                 })
                 Utility.New('UIPadding', {
                     Name = 'UIPadding',
@@ -2016,6 +2057,7 @@ local Library = (function()
                     Padding = UDim.new(0, 6),
                 })
 
+                -- Icon
                 if cfg.icon then
                     Objects.Icon = Utility.New('ImageLabel', {
                         Name = 'Icon',
@@ -2063,7 +2105,6 @@ local Library = (function()
                 })
                 ZIndex = ZIndex + 1
                 
-                -- Left and Right containers for content
                 Objects.Left = Utility.New('Frame', {
                     Name = 'Left',
                     BackgroundTransparency = 1,
@@ -2179,62 +2220,6 @@ local Library = (function()
             return setmetatable(Tab, Library)
         end
 
-        function Library.Info(self, cfg)
-            cfg = cfg or {}
-            cfg = Library.Config(cfg, {
-                name = 'Misc',
-            })
-
-            local Info = {
-                Objects = {},
-                ZIndex = self.ZIndex,
-            }
-            local ZIndex = Info.ZIndex
-            local Objects = Info.Objects
-
-            do
-                Objects.Holder = Utility.New('Frame', {
-                    BackgroundTransparency = 1,
-                    Size = UDim2.new(1, 0, 0, 0),
-                    AutomaticSize = Enum.AutomaticSize.Y,
-                    Parent = self.SideHolder,
-                    ZIndex = ZIndex,
-                })
-
-                Utility.New('UIPadding', {
-                    Name = 'UIPadding',
-                    PaddingLeft = UDim.new(0, 7),
-                    PaddingRight = UDim.new(0, 7),
-                    PaddingTop = UDim.new(0, 0),
-                    PaddingBottom = UDim.new(0, 0),
-                    Parent = Objects.Holder,
-                })
-
-                ZIndex = ZIndex + 1
-                Objects.Text = Utility.New('TextLabel', {
-                    Name = 'Text',
-                    TextStrokeTransparency = 0.8,
-                    BackgroundTransparency = 1,
-                    TextSize = Library.FontSize - 2,
-                    FontFace = Library.Font,
-                    Size = UDim2.new(0, 0, 0, 0),
-                    Position = UDim2.new(0, 0, 0, 0),
-                    AutomaticSize = Enum.AutomaticSize.XY,
-                    TextColor3 = Color3.fromRGB(255, 255, 255),
-                    Text = cfg.name,
-                    Parent = Objects.Holder,
-                    ZIndex = ZIndex,
-                }, {
-                    TextColor3 = 'Dark Text',
-                })
-                ZIndex = ZIndex + 1
-            end
-
-            Info.ZIndex = ZIndex
-
-            return setmetatable(Info, Library)
-        end
-
         function Library.Section(self, cfg)
             cfg = cfg or {}
             cfg = Library.Config(cfg, {
@@ -2273,6 +2258,12 @@ local Library = (function()
                     BackgroundColor3 = 'Inline',
                 })
                 
+                Utility.New('UICorner', {
+                    Name = 'UICorner',
+                    Parent = Objects.MainOutline,
+                    CornerRadius = UDim.new(0, 8),
+                })
+                
                 Objects.Outline = Utility.New('Frame', {
                     Name = 'Background',
                     BorderSizePixel = 0,
@@ -2288,7 +2279,7 @@ local Library = (function()
                 Utility.New('UICorner', {
                     Name = 'UICorner',
                     Parent = Objects.Outline,
-                    CornerRadius = UDim.new(0, 5),
+                    CornerRadius = UDim.new(0, 8),
                 })
 
                 Objects.Constraint = Utility.New('UISizeConstraint', {
@@ -2339,7 +2330,7 @@ local Library = (function()
                 Utility.New('UICorner', {
                     Name = 'UICorner',
                     Parent = Objects.TitleBackground,
-                    CornerRadius = UDim.new(0, 3),
+                    CornerRadius = UDim.new(0, 4),
                 })
                 
                 ZIndex = ZIndex + 2
@@ -2561,7 +2552,7 @@ local Library = (function()
                             Utility.New('UICorner', {
                                 Name = 'UICorner',
                                 Parent = Indicator,
-                                CornerRadius = UDim.new(0, 5),
+                                CornerRadius = UDim.new(0, 8),
                             })
 
                             local Background = Utility.New('Frame', {
@@ -2577,7 +2568,7 @@ local Library = (function()
                             Utility.New('UICorner', {
                                 Name = 'UICorner',
                                 Parent = Background,
-                                CornerRadius = UDim.new(0, 5),
+                                CornerRadius = UDim.new(0, 8),
                             })
                             Utility.New('UISizeConstraint', {
                                 Parent = Indicator,
@@ -2624,6 +2615,62 @@ local Library = (function()
             end
 
             return setmetatable(Section, Library)
+        end
+
+        function Library.Info(self, cfg)
+            cfg = cfg or {}
+            cfg = Library.Config(cfg, {
+                name = 'Misc',
+            })
+
+            local Info = {
+                Objects = {},
+                ZIndex = self.ZIndex,
+            }
+            local ZIndex = Info.ZIndex
+            local Objects = Info.Objects
+
+            do
+                Objects.Holder = Utility.New('Frame', {
+                    BackgroundTransparency = 1,
+                    Size = UDim2.new(1, 0, 0, 0),
+                    AutomaticSize = Enum.AutomaticSize.Y,
+                    Parent = self.SideHolder,
+                    ZIndex = ZIndex,
+                })
+
+                Utility.New('UIPadding', {
+                    Name = 'UIPadding',
+                    PaddingLeft = UDim.new(0, 7),
+                    PaddingRight = UDim.new(0, 7),
+                    PaddingTop = UDim.new(0, 0),
+                    PaddingBottom = UDim.new(0, 0),
+                    Parent = Objects.Holder,
+                })
+
+                ZIndex = ZIndex + 1
+                Objects.Text = Utility.New('TextLabel', {
+                    Name = 'Text',
+                    TextStrokeTransparency = 0.8,
+                    BackgroundTransparency = 1,
+                    TextSize = Library.FontSize - 2,
+                    FontFace = Library.Font,
+                    Size = UDim2.new(0, 0, 0, 0),
+                    Position = UDim2.new(0, 0, 0, 0),
+                    AutomaticSize = Enum.AutomaticSize.XY,
+                    TextColor3 = Color3.fromRGB(255, 255, 255),
+                    Text = cfg.name,
+                    Parent = Objects.Holder,
+                    ZIndex = ZIndex,
+                }, {
+                    TextColor3 = 'Dark Text',
+                })
+                ZIndex = ZIndex + 1
+            end
+
+            Info.ZIndex = ZIndex
+
+            return setmetatable(Info, Library)
         end
 
         function Library.PopupMenu(self, cfg)
