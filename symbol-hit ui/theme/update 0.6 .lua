@@ -745,6 +745,9 @@ local Library = (function()
         Saturation = 'rbxassetid://13901004307',
         Checkers = 'http://www.roblox.com/asset/?id=18274452449',
         Checkmark = 'rbxassetid://10709790644',
+        -- Glow configuration
+        GlowIntensity = 0.8,
+        GlowSize = 12,
         Converts = {
             [0] = '0',
             '1',
@@ -1179,9 +1182,10 @@ local Library = (function()
             local Objects = Popup.Objects
 
             do
+                -- WIDER COLOR PICKER
                 Objects.Outline = Utility.New('Frame', {
                     Name = 'Outline',
-                    Size = UDim2.new(0, 200, 0, 150),
+                    Size = UDim2.new(0, 220, 0, 200),  -- Increased from 150x150
                     BorderSizePixel = 0,
                     Parent = Library.ScreenGui,
                     ZIndex = ZIndex,
@@ -1229,7 +1233,7 @@ local Library = (function()
                 ZIndex = ZIndex + 1
                 Objects.SaturationOutline = Utility.New('TextButton', {
                     Name = 'SaturationOutline',
-                    Size = UDim2.new(1, -14, 1, -14),
+                    Size = UDim2.new(1, -14, 1, -24),  -- Adjusted for new size
                     BorderSizePixel = 0,
                     Parent = Objects.Background,
                     Text = '',
@@ -1320,8 +1324,8 @@ local Library = (function()
 
                 Objects.HueOutline = Utility.New('TextButton', {
                     Name = 'HueOutline',
-                    Size = UDim2.new(0, 16, 1, 0),
-                    Position = UDim2.new(1, -16, 0, 0),
+                    Size = UDim2.new(0, 12, 1, -24),  -- Adjusted for new size
+                    Position = UDim2.new(1, -12, 0, 0),
                     BorderSizePixel = 0,
                     Parent = Objects.Background,
                     Text = '',
@@ -1407,8 +1411,8 @@ local Library = (function()
 
                 Objects.AlphaOutline = Utility.New('TextButton', {
                     Name = 'AlphaOutline',
-                    Size = UDim2.new(1, -14, 0, 14),
-                    Position = UDim2.new(0, 0, 1, -14),
+                    Size = UDim2.new(1, -14, 0, 12),
+                    Position = UDim2.new(0, 0, 1, -12),
                     BorderSizePixel = 0,
                     Parent = Objects.Background,
                     Text = '',
@@ -1745,7 +1749,7 @@ local Library = (function()
 
                 ZIndex = ZIndex + 1
                 
-                -- Sidebar Background (inside the outline)
+                -- Sidebar Background
                 Objects.SideBackground = Utility.New('Frame', {
                     Name = 'SideBackground',
                     Size = UDim2.new(1, -2, 1, -2),
@@ -1766,7 +1770,6 @@ local Library = (function()
                 
                 Library.Dragging(Objects.Outline, Objects.SideBackground)
                 
-                -- Add padding inside the sidebar
                 Utility.New('UIPadding', {
                     Name = 'UIPadding',
                     PaddingLeft = UDim.new(0, 5),
@@ -2033,9 +2036,10 @@ local Library = (function()
                 })
                 ZIndex = ZIndex + 1
                 
+                -- Main container for the tab (transparent background - NO OUTLINE)
                 Objects.Background = Utility.New('TextButton', {
                     Name = 'Background',
-                    Size = UDim2.new(1, 0, 0, 0),
+                    Size = UDim2.new(1, 0, 1, 0),
                     AutomaticSize = Enum.AutomaticSize.Y,
                     BorderSizePixel = 0,
                     BackgroundTransparency = 1,
@@ -2048,39 +2052,65 @@ local Library = (function()
                 })
                 ZIndex = ZIndex + 1
 
-                Objects.SelectionLine = Utility.New('Frame', {
-                    Name = 'SelectionLine',
-                    Size = UDim2.new(0, 3, 0, 0),
-                    Position = UDim2.new(0, 0, 0, 0),
+                -- GLOW CONTAINER - holds the glow and accent line
+                Objects.GlowContainer = Utility.New('Frame', {
+                    Name = 'GlowContainer',
                     BorderSizePixel = 0,
                     BackgroundTransparency = 1,
+                    Size = UDim2.new(0, 3, 1, -4),
+                    Position = UDim2.new(0, 0, 0, 2),
                     Parent = Objects.Background,
+                    ZIndex = ZIndex,
+                    ClipsDescendants = false,
+                })
+                ZIndex = ZIndex + 1
+
+                -- The main accent line
+                Objects.AccentLine = Utility.New('Frame', {
+                    Name = 'AccentLine',
+                    BorderSizePixel = 0,
+                    Size = UDim2.new(1, 0, 1, 0),
+                    BackgroundTransparency = 1,
+                    Parent = Objects.GlowContainer,
                     ZIndex = ZIndex,
                 }, {
                     BackgroundColor3 = 'Accent',
                 })
-                
-                Utility.Signal(Objects.Background:GetPropertyChangedSignal('AbsoluteSize'):Connect(function()
-                    Objects.SelectionLine.Size = UDim2.new(0, 3, 1, 0)
-                end))
-                
-                ZIndex = ZIndex + 1
-                
-                Objects.Content = Utility.New('Frame', {
-                    Name = 'Content',
-                    Size = UDim2.new(1, 0, 0, 0),
-                    AutomaticSize = Enum.AutomaticSize.Y,
-                    Position = UDim2.new(0, 8, 0, 0),
-                    BackgroundTransparency = 1,
-                    BorderSizePixel = 0,
-                    Parent = Objects.Background,
-                    ZIndex = ZIndex,
+
+                Utility.New('UICorner', {
+                    Name = 'UICorner',
+                    Parent = Objects.AccentLine,
+                    CornerRadius = UDim.new(0, 2),
                 })
-                ZIndex = ZIndex + 1
-                
+
+                -- GLOW IMAGE - creates the glow effect around the line
+                Objects.Glow = Utility.New('ImageLabel', {
+                    Name = 'Glow',
+                    BackgroundTransparency = 1,
+                    Size = UDim2.new(1, 12, 1, 12),
+                    Position = UDim2.new(0, -6, 0, -6),
+                    Image = 'rbxassetid://5028857105',
+                    ImageTransparency = 1,
+                    ScaleType = Enum.ScaleType.Slice,
+                    SliceCenter = Rect.new(5, 5, 5, 5),
+                    Parent = Objects.GlowContainer,
+                    ZIndex = ZIndex - 1,
+                }, {
+                    ImageColor3 = 'Accent',
+                })
+
+                -- Padding for the tab content
+                Utility.New('UIPadding', {
+                    Name = 'UIPadding',
+                    Parent = Objects.Background,
+                    PaddingLeft = UDim.new(0, 14),
+                    PaddingRight = UDim.new(0, 8),
+                    PaddingTop = UDim.new(0, 6),
+                    PaddingBottom = UDim.new(0, 6),
+                })
                 Utility.New('UIListLayout', {
                     Name = 'UIListLayout',
-                    Parent = Objects.Content,
+                    Parent = Objects.Background,
                     FillDirection = Enum.FillDirection.Horizontal,
                     SortOrder = Enum.SortOrder.LayoutOrder,
                     Padding = UDim.new(0, 7),
@@ -2094,7 +2124,7 @@ local Library = (function()
                         AutomaticSize = Enum.AutomaticSize.XY,
                         BackgroundTransparency = 1,
                         Image = cfg.icon,
-                        Parent = Objects.Content,
+                        Parent = Objects.Background,
                         ZIndex = ZIndex,
                     }, {
                         ImageColor3 = 'Dark Text',
@@ -2111,7 +2141,7 @@ local Library = (function()
                     Position = UDim2.new(0, 0, 0, 0),
                     TextColor3 = Color3.fromRGB(255, 255, 255),
                     Text = cfg.name,
-                    Parent = Objects.Content,
+                    Parent = Objects.Background,
                     ZIndex = ZIndex,
                 }, {
                     TextColor3 = 'Dark Text',
@@ -2133,6 +2163,7 @@ local Library = (function()
                 })
                 ZIndex = ZIndex + 1
                 
+                -- Left side container
                 Objects.Left = Utility.New('Frame', {
                     Name = 'Left',
                     BackgroundTransparency = 1,
@@ -2155,6 +2186,7 @@ local Library = (function()
 
                 Tab.left = Objects.Left
                 
+                -- Right side container
                 Objects.Right = Utility.New('Frame', {
                     Name = 'Right',
                     BackgroundTransparency = 1,
@@ -2185,31 +2217,61 @@ local Library = (function()
                     return
                 end
 
+                -- Animate the accent line with glow
                 if status then
-                    Objects.SelectionLine.BackgroundTransparency = 0
-                    Library.Tween(Objects.SelectionLine, {
+                    -- Show the line with glow
+                    Library.Tween(Objects.AccentLine, {
                         BackgroundTransparency = 0,
                     })
-                    Library.ChangeObjectTheme(Objects.Text, {
-                        TextColor3 = 'Text',
-                    }, true)
-                    if Objects.Icon then
-                        Library.ChangeObjectTheme(Objects.Icon, {
-                            ImageColor3 = 'Text',
-                        }, true)
-                    end
+                    
+                    -- Glow appears with pulsing effect
+                    Library.Tween(Objects.Glow, {
+                        ImageTransparency = 0.3,
+                        Size = UDim2.new(1, 12, 1, 12),
+                    })
+                    
+                    -- Pulsing glow animation
+                    task.spawn(function()
+                        while Objects.Page.Visible do
+                            task.wait(0.8)
+                            if Objects.Page.Visible then
+                                -- Pulse out
+                                Library.Tween(Objects.Glow, {
+                                    ImageTransparency = 0.15,
+                                    Size = UDim2.new(1, 16, 1, 16),
+                                }, TweenInfo.new(0.4, Enum.EasingStyle.Sine, Enum.EasingDirection.Out))
+                                
+                                task.wait(0.4)
+                                if Objects.Page.Visible then
+                                    -- Pulse in
+                                    Library.Tween(Objects.Glow, {
+                                        ImageTransparency = 0.3,
+                                        Size = UDim2.new(1, 12, 1, 12),
+                                    }, TweenInfo.new(0.4, Enum.EasingStyle.Sine, Enum.EasingDirection.Out))
+                                end
+                            end
+                        end
+                    end)
                 else
-                    Library.Tween(Objects.SelectionLine, {
+                    -- Hide the line and glow
+                    Library.Tween(Objects.AccentLine, {
                         BackgroundTransparency = 1,
                     })
-                    Library.ChangeObjectTheme(Objects.Text, {
-                        TextColor3 = 'Dark Text',
+                    Library.Tween(Objects.Glow, {
+                        ImageTransparency = 1,
+                        Size = UDim2.new(1, 12, 1, 12),
+                    })
+                end
+                
+                -- Update text color
+                Library.ChangeObjectTheme(Objects.Text, {
+                    TextColor3 = status and 'Text' or 'Dark Text',
+                }, true)
+
+                if Objects.Icon then
+                    Library.ChangeObjectTheme(Objects.Icon, {
+                        ImageColor3 = status and 'Text' or 'Dark Text',
                     }, true)
-                    if Objects.Icon then
-                        Library.ChangeObjectTheme(Objects.Icon, {
-                            ImageColor3 = 'Dark Text',
-                        }, true)
-                    end
                 end
 
                 Objects.Page.Visible = status
@@ -2250,39 +2312,8 @@ local Library = (function()
                 end
             end
 
-            Utility.Signal(Objects.Background.MouseEnter:Connect(function()
-                if not Tab._isSelected then
-                    Library.ChangeObjectTheme(Objects.Text, {
-                        TextColor3 = 'Text',
-                    }, true)
-                    if Objects.Icon then
-                        Library.ChangeObjectTheme(Objects.Icon, {
-                            ImageColor3 = 'Text',
-                        }, true)
-                    end
-                end
-            end))
-
-            Utility.Signal(Objects.Background.MouseLeave:Connect(function()
-                if not Tab._isSelected then
-                    Library.ChangeObjectTheme(Objects.Text, {
-                        TextColor3 = 'Dark Text',
-                    }, true)
-                    if Objects.Icon then
-                        Library.ChangeObjectTheme(Objects.Icon, {
-                            ImageColor3 = 'Dark Text',
-                        }, true)
-                    end
-                end
-            end))
-
-            local originalSet = Tab.Set
-            Tab.Set = function(status, nested)
-                Tab._isSelected = status
-                originalSet(status, nested)
-            end
-
-            Utility.Signal(Objects.Background.MouseButton1Click:Connect(function()
+            Utility.Signal(Objects.Background.MouseButton1Click:Connect(function(
+            )
                 Tab.Set(true)
             end))
             table.insert(self.Tabs, Tab)
@@ -2788,7 +2819,11 @@ local Library = (function()
 
             Popup.ZIndex = ZIndex
 
-            function Popup.Visible(visibility, position, stopPropagation)
+            function Popup.Visible(
+                visibility,
+                position,
+                stopPropagation
+            )
                 if Popup.Tweening then
                     return
                 end
@@ -2829,61 +2864,49 @@ local Library = (function()
                 for _, obj in ParentObjects do
                     local Index = Utility.GetTransparency(obj)
 
-                    if Index then
-                        if type(Index) == 'table' then
-                            for _, prop in Index do
-                                Library.Fade(obj, prop, visibility)
-                            end
-                        else
-                            Library.Fade(obj, Index, visibility)
+                    if not Index then
+                    end
+                    if type(Index) == 'table' then
+                        for _, prop in Index do
+                            Library.Fade(obj, prop, visibility)
                         end
+                    else
+                        Library.Fade(obj, Index, visibility)
                     end
                 end
 
-                local targetHeight = Objects.Holder.AbsoluteSize.Y + 10
-                
+                local OldSize = Objects.Outline.AbsoluteSize
+
+                Objects.Outline.AutomaticSize = Enum.AutomaticSize.None
+                Objects.Outline.Size = visibility and UDim2.new(0, cfg.size, 0, 0) or UDim2.new(0, cfg.size, 0, OldSize.Y)
+
                 if position then
                     Objects.Outline.Position = UDim2.new(0, position.X, 0, position.Y)
                 end
 
-                Objects.Outline.AutomaticSize = Enum.AutomaticSize.None
-                
-                if visibility then
-                    Objects.Outline.Size = UDim2.new(0, cfg.size, 0, 0)
-                    local Tween = Library.Tween(Objects.Outline, {
-                        Size = UDim2.new(0, cfg.size, 0, targetHeight),
-                    })
-                    Utility.Signal(Tween.Completed:Connect(function()
-                        Popup.Tweening = false
-                        Objects.Outline.Size = UDim2.new(0, cfg.size, 0, 0)
-                        Objects.Outline.AutomaticSize = Enum.AutomaticSize.Y
-                    end))
-                else
-                    local currentHeight = Objects.Outline.AbsoluteSize.Y
-                    Objects.Outline.Size = UDim2.new(0, cfg.size, 0, currentHeight)
-                    local Tween = Library.Tween(Objects.Outline, {
-                        Size = UDim2.new(0, cfg.size, 0, 0),
-                    })
-                    Utility.Signal(Tween.Completed:Connect(function()
-                        Popup.Tweening = false
-                        Objects.Outline.Size = UDim2.new(0, cfg.size, 0, 0)
-                        Objects.Outline.AutomaticSize = Enum.AutomaticSize.Y
-                        Objects.Outline.Visible = visibility
+                local Tween = Library.Tween(Objects.Outline, {
+                    Size = visibility and UDim2.new(0, cfg.size, 0, OldSize.Y) or UDim2.new(0, cfg.size, 0, 0),
+                })
 
-                        if not visibility and not stopPropagation then
-                            for _, childPopup in pairs(Popup.ChildPopups)do
-                                if childPopup.Objects.Outline.Visible then
-                                    childPopup.Visible(false)
-                                end
-                            end
-                            for _, dropdown in pairs(Library.Dropdowns)do
-                                if dropdown.ParentPopup == Popup and dropdown.Visible then
-                                    dropdown.Open()
-                                end
+                Utility.Signal(Tween.Completed:Connect(function()
+                    Popup.Tweening = false
+                    Objects.Outline.Size = UDim2.new(0, cfg.size, 0, 0)
+                    Objects.Outline.AutomaticSize = Enum.AutomaticSize.Y
+                    Objects.Outline.Visible = visibility
+
+                    if not visibility and not stopPropagation then
+                        for _, childPopup in pairs(Popup.ChildPopups)do
+                            if childPopup.Objects.Outline.Visible then
+                                childPopup.Visible(false)
                             end
                         end
-                    end))
-                end
+                        for _, dropdown in pairs(Library.Dropdowns)do
+                            if dropdown.ParentPopup == Popup and dropdown.Visible then
+                                dropdown.Open()
+                            end
+                        end
+                    end
+                end))
             end
             
             function Popup:NestedPopup(cfg)
@@ -2915,236 +2938,190 @@ local Library = (function()
         end
         
         function Library.Popup(self, cfg)
-    cfg = cfg or {}
-    cfg = Library.Config(cfg, {size = 120})
+            cfg = cfg or {}
+            cfg = Library.Config(cfg, {size = 120})
 
-    local Cog = {
-        Objects = {},
-        ZIndex = self.ZIndex,
-        Visible = false,
-    }
-    local ZIndex = Cog.ZIndex
-    local Objects = Cog.Objects
+            local Cog = {
+                Objects = {},
+                ZIndex = self.ZIndex,
+                Visible = false,
+            }
+            local ZIndex = Cog.ZIndex
+            local Objects = Cog.Objects
 
-    -- Check if SideHolder exists, if not create one
-    if not self.SideHolder then
-        -- Create a SideHolder if it doesn't exist
-        self.SideHolder = Utility.New('Frame', {
-            Name = 'SideHolder',
-            Size = UDim2.new(0, 0, 1, 0),
-            AutomaticSize = Enum.AutomaticSize.X,
-            Position = UDim2.fromOffset(0, 0),
-            BackgroundTransparency = 1,
-            BorderSizePixel = 0,
-            Parent = self.Holder or self,
-            ZIndex = ZIndex,
-        })
-
-        Utility.New('UIListLayout', {
-            Name = 'UIListLayout',
-            FillDirection = Enum.FillDirection.Horizontal,
-            SortOrder = Enum.SortOrder.LayoutOrder,
-            HorizontalAlignment = Enum.HorizontalAlignment.Right,
-            Parent = self.SideHolder,
-            Padding = UDim.new(0, 2),
-        })
-    end
-
-    do
-        Objects.Icon = Utility.New('ImageButton', {
-            Name = 'Icon',
-            Size = UDim2.new(0, 20, 0, 20), -- Default size if AbsoluteSize is not available
-            BackgroundTransparency = 1,
-            AutoButtonColor = false,
-            Style = Enum.ButtonStyle.Custom,
-            Image = 'rbxassetid://81593156472608',
-            Parent = self.SideHolder,
-            ZIndex = ZIndex,
-        }, {
-            ImageColor3 = 'Dark Text',
-        })
-        
-        -- Set the size after a small delay to ensure AbsoluteSize is available
-        task.spawn(function()
-            task.wait()
-            if Objects.Icon and self.SideHolder then
-                local size = self.SideHolder.AbsoluteSize.Y
-                if size > 0 then
-                    Objects.Icon.Size = UDim2.new(0, size, 0, size)
-                else
-                    Objects.Icon.Size = UDim2.new(0, 20, 0, 20)
-                end
+            do
+                Objects.Icon = Utility.New('ImageButton', {
+                    Name = 'Icon',
+                    Size = UDim2.new(0, self.SideHolder.AbsoluteSize.Y, 0, self.SideHolder.AbsoluteSize.Y),
+                    BackgroundTransparency = 1,
+                    AutoButtonColor = false,
+                    Style = Enum.ButtonStyle.Custom,
+                    Image = 'rbxassetid://81593156472608',
+                    Parent = self.SideHolder,
+                    ZIndex = ZIndex,
+                }, {
+                    ImageColor3 = 'Dark Text',
+                })
             end
-        end)
-    end
 
-    local Popup = self:PopupMenu(cfg)
+            local Popup = self:PopupMenu(cfg)
 
-    Popup.BoundObjects = {
-        Objects.Icon,
-        Popup.Objects.Outline,
-        (Library.ColorpickerWindow and type(Library.ColorpickerWindow) == 'table' and Library.ColorpickerWindow.Objects and Library.ColorpickerWindow.Objects.Outline) or nil,
-    }
-    Popup.ParentElement = self
+            Popup.BoundObjects = {
+                Objects.Icon,
+                Popup.Objects.Outline,
+                (Library.ColorpickerWindow and type(Library.ColorpickerWindow) == 'table' and Library.ColorpickerWindow.Objects and Library.ColorpickerWindow.Objects.Outline) or nil,
+            }
+            Popup.ParentElement = self
 
-    function Cog.InsideBounds(input)
-        for _, obj in Popup.BoundObjects do
-            if obj and Utility.MouseOver(obj, input) then
-                return true
-            end
-        end
-        for _, childPopup in pairs(Popup.ChildPopups)do
-            if childPopup.Objects.Outline.Visible then
-                if Utility.MouseOver(childPopup.Objects.Outline, input) then
-                    return true
-                end
-
-                for _, nestedObj in pairs(childPopup.BoundObjects or {})do
-                    if nestedObj and Utility.MouseOver(nestedObj, input) then
+            function Cog.InsideBounds(input)
+                for _, obj in Popup.BoundObjects do
+                    if obj and Utility.MouseOver(obj, input) then
                         return true
                     end
                 end
-            end
-        end
+                for _, childPopup in pairs(Popup.ChildPopups)do
+                    if childPopup.Objects.Outline.Visible then
+                        if Utility.MouseOver(childPopup.Objects.Outline, input) then
+                            return true
+                        end
 
-        return false
-    end
-
-    if not Library.GlobalPopupClickHandler then
-        Library.GlobalPopupClickHandler = true
-
-        Utility.Signal(UserInputService.InputBegan:Connect(function(
-            input
-        )
-            if input.UserInputType ~= Enum.UserInputType.MouseButton1 then
-                return
-            end
-
-            local function isLibraryUI(obj)
-                while obj do
-                    if obj == Library.ScreenGui then
-                        return true
+                        for _, nestedObj in pairs(childPopup.BoundObjects or {})do
+                            if nestedObj and Utility.MouseOver(nestedObj, input) then
+                                return true
+                            end
+                        end
                     end
-
-                    obj = obj.Parent
                 end
 
                 return false
             end
 
-            local ignoreCloseCheck = false
-            local guiObjectsAtPosition = game:GetService('CoreGui'):GetGuiObjectsAtPosition(input.Position.X, input.Position.Y)
+            if not Library.GlobalPopupClickHandler then
+                Library.GlobalPopupClickHandler = true
 
-            for _, obj in ipairs(guiObjectsAtPosition)do
-                if isLibraryUI(obj) then
-                    if obj:IsA('ImageButton') or obj:IsA('TextButton') then
-                        ignoreCloseCheck = true
-
-                        break
+                Utility.Signal(UserInputService.InputBegan:Connect(function(
+                    input
+                )
+                    if input.UserInputType ~= Enum.UserInputType.MouseButton1 then
+                        return
                     end
-                end
-            end
 
-            if ignoreCloseCheck then
-                return
-            end
-
-            for _, popup in pairs(Library.Popups)do
-                if popup.Objects.Outline.Visible then
-                    local function isInsidePopupHierarchy(
-                        p,
-                        input
-                    )
-                        if Utility.MouseOver(p.Objects.Outline, input) then
-                            return true
-                        end
-
-                        for _, child in pairs(p.ChildPopups)do
-                            if child.Objects.Outline.Visible and isInsidePopupHierarchy(child, input) then
+                    local function isLibraryUI(obj)
+                        while obj do
+                            if obj == Library.ScreenGui then
                                 return true
                             end
+
+                            obj = obj.Parent
                         end
 
                         return false
                     end
 
-                    if not isInsidePopupHierarchy(popup, input) then
-                        local isChildOfActiveParent = false
+                    local ignoreCloseCheck = false
+                    local guiObjectsAtPosition = game:GetService('CoreGui'):GetGuiObjectsAtPosition(input.Position.X, input.Position.Y)
 
-                        local function isInParentOfPopup(
-                            p,
-                            input
-                        )
-                            if p.ParentPopup and p.ParentPopup.Objects.Outline.Visible then
-                                if Utility.MouseOver(p.ParentPopup.Objects.Outline, input) then
+                    for _, obj in ipairs(guiObjectsAtPosition)do
+                        if isLibraryUI(obj) then
+                            if obj:IsA('ImageButton') or obj:IsA('TextButton') then
+                                ignoreCloseCheck = true
+
+                                break
+                            end
+                        end
+                    end
+
+                    if ignoreCloseCheck then
+                        return
+                    end
+
+                    for _, popup in pairs(Library.Popups)do
+                        if popup.Objects.Outline.Visible then
+                            local function isInsidePopupHierarchy(
+                                p,
+                                input
+                            )
+                                if Utility.MouseOver(p.Objects.Outline, input) then
                                     return true
                                 end
 
-                                return isInParentOfPopup(p.ParentPopup, input)
+                                for _, child in pairs(p.ChildPopups)do
+                                    if child.Objects.Outline.Visible and isInsidePopupHierarchy(child, input) then
+                                        return true
+                                    end
+                                end
+
+                                return false
                             end
 
-                            return false
-                        end
+                            if not isInsidePopupHierarchy(popup, input) then
+                                local isChildOfActiveParent = false
 
-                        if not isInParentOfPopup(popup, input) and popup.ParentElement then
-                            popup.Visible(false, nil, true)
+                                local function isInParentOfPopup(
+                                    p,
+                                    input
+                                )
+                                    if p.ParentPopup and p.ParentPopup.Objects.Outline.Visible then
+                                        if Utility.MouseOver(p.ParentPopup.Objects.Outline, input) then
+                                            return true
+                                        end
 
-                            if popup.ParentElement.Objects and popup.ParentElement.Objects.Icon then
-                                Library.ChangeObjectTheme(popup.ParentElement.Objects.Icon, {
-                                    ImageColor3 = 'Dark Text',
-                                }, true)
+                                        return isInParentOfPopup(p.ParentPopup, input)
+                                    end
+
+                                    return false
+                                end
+
+                                if not isInParentOfPopup(popup, input) and popup.ParentElement then
+                                    popup.Visible(false, nil, true)
+
+                                    if popup.ParentElement.Objects and popup.ParentElement.Objects.Icon then
+                                        Library.ChangeObjectTheme(popup.ParentElement.Objects.Icon, {
+                                            ImageColor3 = 'Dark Text',
+                                        }, true)
+                                    end
+                                end
                             end
                         end
                     end
-                end
-            end
-            for _, dropdown in pairs(Library.Dropdowns)do
-                if dropdown.Visible then
-                    if not Utility.MouseOver(dropdown.Popup.Outline, input) and not Utility.MouseOver(dropdown.Objects.Outline, input) then
-                        dropdown.Open()
+                    for _, dropdown in pairs(Library.Dropdowns)do
+                        if dropdown.Visible then
+                            if not Utility.MouseOver(dropdown.Popup.Outline, input) and not Utility.MouseOver(dropdown.Objects.Outline, input) then
+                                dropdown.Open()
+                            end
+                        end
                     end
-                end
+                end))
             end
-        end))
-    end
 
-    -- Use RenderStepped for position updates
-    local positionUpdater
-    positionUpdater = Utility.Signal(RunService.RenderStepped:Connect(function()
-        if Popup.Objects.Outline and Popup.Objects.Outline.Visible and Objects.Icon then
-            local AbsolutePosition = Objects.Icon.AbsolutePosition
-            local AbsoluteSize = Objects.Icon.AbsoluteSize
-            
-            if AbsolutePosition and AbsoluteSize then
-                local newPos = UDim2.new(0, AbsolutePosition.x, 0, AbsolutePosition.y + AbsoluteSize.y + 5)
-                if Popup.Objects.Outline.Position ~= newPos then
-                    Popup.Objects.Outline.Position = newPos
+            Utility.Signal(Objects.Icon:GetPropertyChangedSignal('AbsolutePosition'):Connect(function(
+            )
+                if Popup.Objects.Outline.Visible then
+                    local AbsolutePosition = Objects.Icon.AbsolutePosition
+                    local AbsoluteSize = Objects.Icon.AbsoluteSize
+
+                    Popup.Objects.Outline.Position = UDim2.new(0, AbsolutePosition.x, 0, AbsolutePosition.y + AbsoluteSize.y + 5)
                 end
-            end
+            end))
+            Utility.Signal(Objects.Icon.MouseButton1Click:Connect(function(
+            )
+                Cog.Visible = not Cog.Visible
+
+                local AbsolutePosition = Objects.Icon.AbsolutePosition
+                local AbsoluteSize = Objects.Icon.AbsoluteSize
+                local Position = Vector2.new(AbsolutePosition.x, AbsolutePosition.y + AbsoluteSize.y + 5)
+
+                Library.ChangeObjectTheme(Objects.Icon, {
+                    ImageColor3 = Cog.Visible and 'Text' or 'Dark Text',
+                }, true)
+
+                local stopPropagation = true
+
+                Popup.Visible(Cog.Visible, Position, stopPropagation)
+            end))
+
+            return Popup
         end
-    end))
-    
-    Popup._positionUpdater = positionUpdater
-
-    Utility.Signal(Objects.Icon.MouseButton1Click:Connect(function(
-    )
-        Cog.Visible = not Cog.Visible
-
-        local AbsolutePosition = Objects.Icon.AbsolutePosition
-        local AbsoluteSize = Objects.Icon.AbsoluteSize
-        local Position = Vector2.new(AbsolutePosition.x or 0, (AbsolutePosition.y or 0) + (AbsoluteSize.y or 20) + 5)
-
-        Library.ChangeObjectTheme(Objects.Icon, {
-            ImageColor3 = Cog.Visible and 'Text' or 'Dark Text',
-        }, true)
-
-        local stopPropagation = true
-
-        Popup.Visible(Cog.Visible, Position, stopPropagation)
-    end))
-
-    return Popup
-end
         
         function Library.Toggle(self, cfg)
             cfg = cfg or {}
@@ -3191,15 +3168,62 @@ end
                 })
 
                 ZIndex = ZIndex + 1
-                
-                Objects.Row = Utility.New('Frame', {
-                    Name = 'Row',
+                Objects.Line = Utility.New('TextButton', {
+                    Name = 'Line',
                     Size = UDim2.new(1, 0, 0, 0),
                     Position = UDim2.fromOffset(0, 0),
                     BackgroundTransparency = 1,
+                    AutoButtonColor = false,
                     AutomaticSize = Enum.AutomaticSize.Y,
-                    BorderSizePixel = 0,
+                    Style = Enum.ButtonStyle.Custom,
+                    Text = '',
                     Parent = Objects.Holder,
+                    ZIndex = ZIndex,
+                })
+
+                Utility.New('UIListLayout', {
+                    Name = 'UIListLayout',
+                    FillDirection = Enum.FillDirection.Vertical,
+                    SortOrder = Enum.SortOrder.LayoutOrder,
+                    Parent = Objects.Line,
+                    Padding = UDim.new(0, 2),
+                })
+
+                ZIndex = ZIndex + 1
+                Objects.Text = Utility.New('TextLabel', {
+                    Name = 'Text',
+                    TextStrokeTransparency = 0.8,
+                    BackgroundTransparency = 1,
+                    TextSize = Library.FontSize,
+                    FontFace = Library.Font,
+                    Size = UDim2.new(1, 0, 0, 0),
+                    AutomaticSize = Enum.AutomaticSize.Y,
+                    Text = cfg.name,
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    Parent = Objects.Line,
+                    ZIndex = ZIndex,
+                }, {
+                    TextColor3 = 'Dark Text',
+                })
+
+                Utility.New('UIListLayout', {
+                    Name = 'UIListLayout',
+                    FillDirection = Enum.FillDirection.Horizontal,
+                    SortOrder = Enum.SortOrder.LayoutOrder,
+                    HorizontalAlignment = Enum.HorizontalAlignment.Right,
+                    Parent = Objects.Text,
+                    Padding = UDim.new(0, 2),
+                })
+
+                ZIndex = ZIndex + 1
+                Objects.SideHolder = Utility.New('Frame', {
+                    Name = 'SideHolder',
+                    Size = UDim2.new(0, 0, 1, 0),
+                    AutomaticSize = Enum.AutomaticSize.X,
+                    Position = UDim2.fromOffset(0, 0),
+                    BackgroundTransparency = 1,
+                    BorderSizePixel = 0,
+                    Parent = Objects.Text,
                     ZIndex = ZIndex,
                 })
 
@@ -3207,25 +3231,46 @@ end
                     Name = 'UIListLayout',
                     FillDirection = Enum.FillDirection.Horizontal,
                     SortOrder = Enum.SortOrder.LayoutOrder,
-                    HorizontalAlignment = Enum.HorizontalAlignment.Left,
-                    Parent = Objects.Row,
-                    Padding = UDim.new(0, 8),
+                    HorizontalAlignment = Enum.HorizontalAlignment.Right,
+                    Parent = Objects.SideHolder,
+                    Padding = UDim.new(0, 2),
                 })
 
+                Toggle.SideHolder = Objects.SideHolder
                 ZIndex = ZIndex + 1
-                
+
+                if cfg.description then
+                    Objects.Description = Utility.New('TextLabel', {
+                        Name = 'Description',
+                        TextStrokeTransparency = 0.8,
+                        BackgroundTransparency = 1,
+                        TextSize = Library.FontSize - 2,
+                        FontFace = Library.Font,
+                        Size = UDim2.new(1, 0, 0, 0),
+                        AutomaticSize = Enum.AutomaticSize.Y,
+                        Text = cfg.description,
+                        TextXAlignment = Enum.TextXAlignment.Left,
+                        Parent = Objects.Line,
+                        ZIndex = ZIndex,
+                        TextWrapped = true,
+                    }, {
+                        TextColor3 = 'Light Text',
+                    })
+                    ZIndex = ZIndex + 1
+                end
+
                 Objects.Outline = Utility.New('Frame', {
                     Name = 'Outline',
                     Size = UDim2.new(0, 0, 0, 0),
                     Position = UDim2.fromOffset(0, 0),
                     BorderSizePixel = 0,
                     BackgroundTransparency = 0,
-                    Parent = Objects.Row,
+                    Parent = Objects.Text,
                     ZIndex = ZIndex,
                 }, {
                     BackgroundColor3 = 'Inline',
                 })
-                Objects.Outline.Size = UDim2.new(0, 20, 0, 20)
+                Objects.Outline.Size = UDim2.new(0, Objects.Text.AbsoluteSize.Y, 0, Objects.Text.AbsoluteSize.Y)
 
                 Utility.New('UICorner', {
                     Name = 'UICorner',
@@ -3265,55 +3310,6 @@ end
                     Visible = false,
                 })
                 ZIndex = ZIndex + 1
-
-                Objects.Text = Utility.New('TextLabel', {
-                    Name = 'Text',
-                    TextStrokeTransparency = 0.8,
-                    BackgroundTransparency = 1,
-                    TextSize = Library.FontSize,
-                    FontFace = Library.Font,
-                    Size = UDim2.new(0, 0, 0, 0),
-                    AutomaticSize = Enum.AutomaticSize.XY,
-                    Text = cfg.name,
-                    TextXAlignment = Enum.TextXAlignment.Left,
-                    Parent = Objects.Row,
-                    ZIndex = ZIndex,
-                }, {
-                    TextColor3 = 'Dark Text',
-                })
-
-                Objects.Clickable = Utility.New('TextButton', {
-                    Name = 'Clickable',
-                    Size = UDim2.new(1, 0, 1, 0),
-                    Position = UDim2.fromOffset(0, 0),
-                    BackgroundTransparency = 1,
-                    AutoButtonColor = false,
-                    Style = Enum.ButtonStyle.Custom,
-                    Text = '',
-                    Parent = Objects.Row,
-                    ZIndex = ZIndex,
-                })
-                ZIndex = ZIndex + 1
-
-                if cfg.description then
-                    Objects.Description = Utility.New('TextLabel', {
-                        Name = 'Description',
-                        TextStrokeTransparency = 0.8,
-                        BackgroundTransparency = 1,
-                        TextSize = Library.FontSize - 2,
-                        FontFace = Library.Font,
-                        Size = UDim2.new(1, 0, 0, 0),
-                        AutomaticSize = Enum.AutomaticSize.Y,
-                        Text = cfg.description,
-                        TextXAlignment = Enum.TextXAlignment.Left,
-                        Parent = Objects.Holder,
-                        ZIndex = ZIndex,
-                        TextWrapped = true,
-                    }, {
-                        TextColor3 = 'Light Text',
-                    })
-                    ZIndex = ZIndex + 1
-                end
 
                 if cfg.children ~= nil then
                     Objects.ChildrenHolder = Utility.New('Frame', {
@@ -3425,7 +3421,7 @@ end
                 Toggle.Set(not Toggle.Value)
             end
 
-            Utility.Signal(Objects.Clickable.MouseButton1Click:Connect(Toggle.Enable))
+            Utility.Signal(Objects.Line.MouseButton1Click:Connect(Toggle.Enable))
             Toggle.Set(cfg.value)
 
             Library.ConfigFlags[cfg.flag] = Toggle.Set
