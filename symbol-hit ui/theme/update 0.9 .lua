@@ -4936,7 +4936,7 @@ end
         -- MAKE THE COLORPICKER ICON WIDER
         Objects.Outline = Utility.New('TextButton', {
             Name = 'Outline',
-            Size = UDim2.new(0, 30, 0, 20), -- Wider: 30px width instead of matching height
+            Size = UDim2.new(0, 30, 0, 15), -- Wider: 30px width instead of matching height
             Position = UDim2.fromOffset(0, 0),
             BorderSizePixel = 0,
             BackgroundTransparency = 0,
