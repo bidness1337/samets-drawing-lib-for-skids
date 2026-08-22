@@ -2915,196 +2915,236 @@ local Library = (function()
         end
         
         function Library.Popup(self, cfg)
-            cfg = cfg or {}
-            cfg = Library.Config(cfg, {size = 120})
+    cfg = cfg or {}
+    cfg = Library.Config(cfg, {size = 120})
 
-            local Cog = {
-                Objects = {},
-                ZIndex = self.ZIndex,
-                Visible = false,
-            }
-            local ZIndex = Cog.ZIndex
-            local Objects = Cog.Objects
+    local Cog = {
+        Objects = {},
+        ZIndex = self.ZIndex,
+        Visible = false,
+    }
+    local ZIndex = Cog.ZIndex
+    local Objects = Cog.Objects
 
-            do
-                Objects.Icon = Utility.New('ImageButton', {
-                    Name = 'Icon',
-                    Size = UDim2.new(0, self.SideHolder.AbsoluteSize.Y, 0, self.SideHolder.AbsoluteSize.Y),
-                    BackgroundTransparency = 1,
-                    AutoButtonColor = false,
-                    Style = Enum.ButtonStyle.Custom,
-                    Image = 'rbxassetid://81593156472608',
-                    Parent = self.SideHolder,
-                    ZIndex = ZIndex,
-                }, {
-                    ImageColor3 = 'Dark Text',
-                })
+    -- Check if SideHolder exists, if not create one
+    if not self.SideHolder then
+        -- Create a SideHolder if it doesn't exist
+        self.SideHolder = Utility.New('Frame', {
+            Name = 'SideHolder',
+            Size = UDim2.new(0, 0, 1, 0),
+            AutomaticSize = Enum.AutomaticSize.X,
+            Position = UDim2.fromOffset(0, 0),
+            BackgroundTransparency = 1,
+            BorderSizePixel = 0,
+            Parent = self.Holder or self,
+            ZIndex = ZIndex,
+        })
+
+        Utility.New('UIListLayout', {
+            Name = 'UIListLayout',
+            FillDirection = Enum.FillDirection.Horizontal,
+            SortOrder = Enum.SortOrder.LayoutOrder,
+            HorizontalAlignment = Enum.HorizontalAlignment.Right,
+            Parent = self.SideHolder,
+            Padding = UDim.new(0, 2),
+        })
+    end
+
+    do
+        Objects.Icon = Utility.New('ImageButton', {
+            Name = 'Icon',
+            Size = UDim2.new(0, 20, 0, 20), -- Default size if AbsoluteSize is not available
+            BackgroundTransparency = 1,
+            AutoButtonColor = false,
+            Style = Enum.ButtonStyle.Custom,
+            Image = 'rbxassetid://81593156472608',
+            Parent = self.SideHolder,
+            ZIndex = ZIndex,
+        }, {
+            ImageColor3 = 'Dark Text',
+        })
+        
+        -- Set the size after a small delay to ensure AbsoluteSize is available
+        task.spawn(function()
+            task.wait()
+            if Objects.Icon and self.SideHolder then
+                local size = self.SideHolder.AbsoluteSize.Y
+                if size > 0 then
+                    Objects.Icon.Size = UDim2.new(0, size, 0, size)
+                else
+                    Objects.Icon.Size = UDim2.new(0, 20, 0, 20)
+                end
             end
+        end)
+    end
 
-            local Popup = self:PopupMenu(cfg)
+    local Popup = self:PopupMenu(cfg)
 
-            Popup.BoundObjects = {
-                Objects.Icon,
-                Popup.Objects.Outline,
-                (Library.ColorpickerWindow and type(Library.ColorpickerWindow) == 'table' and Library.ColorpickerWindow.Objects and Library.ColorpickerWindow.Objects.Outline) or nil,
-            }
-            Popup.ParentElement = self
+    Popup.BoundObjects = {
+        Objects.Icon,
+        Popup.Objects.Outline,
+        (Library.ColorpickerWindow and type(Library.ColorpickerWindow) == 'table' and Library.ColorpickerWindow.Objects and Library.ColorpickerWindow.Objects.Outline) or nil,
+    }
+    Popup.ParentElement = self
 
-            function Cog.InsideBounds(input)
-                for _, obj in Popup.BoundObjects do
-                    if obj and Utility.MouseOver(obj, input) then
+    function Cog.InsideBounds(input)
+        for _, obj in Popup.BoundObjects do
+            if obj and Utility.MouseOver(obj, input) then
+                return true
+            end
+        end
+        for _, childPopup in pairs(Popup.ChildPopups)do
+            if childPopup.Objects.Outline.Visible then
+                if Utility.MouseOver(childPopup.Objects.Outline, input) then
+                    return true
+                end
+
+                for _, nestedObj in pairs(childPopup.BoundObjects or {})do
+                    if nestedObj and Utility.MouseOver(nestedObj, input) then
                         return true
                     end
                 end
-                for _, childPopup in pairs(Popup.ChildPopups)do
-                    if childPopup.Objects.Outline.Visible then
-                        if Utility.MouseOver(childPopup.Objects.Outline, input) then
-                            return true
-                        end
+            end
+        end
 
-                        for _, nestedObj in pairs(childPopup.BoundObjects or {})do
-                            if nestedObj and Utility.MouseOver(nestedObj, input) then
-                                return true
-                            end
-                        end
+        return false
+    end
+
+    if not Library.GlobalPopupClickHandler then
+        Library.GlobalPopupClickHandler = true
+
+        Utility.Signal(UserInputService.InputBegan:Connect(function(
+            input
+        )
+            if input.UserInputType ~= Enum.UserInputType.MouseButton1 then
+                return
+            end
+
+            local function isLibraryUI(obj)
+                while obj do
+                    if obj == Library.ScreenGui then
+                        return true
                     end
+
+                    obj = obj.Parent
                 end
 
                 return false
             end
 
-            if not Library.GlobalPopupClickHandler then
-                Library.GlobalPopupClickHandler = true
+            local ignoreCloseCheck = false
+            local guiObjectsAtPosition = game:GetService('CoreGui'):GetGuiObjectsAtPosition(input.Position.X, input.Position.Y)
 
-                Utility.Signal(UserInputService.InputBegan:Connect(function(
-                    input
-                )
-                    if input.UserInputType ~= Enum.UserInputType.MouseButton1 then
-                        return
+            for _, obj in ipairs(guiObjectsAtPosition)do
+                if isLibraryUI(obj) then
+                    if obj:IsA('ImageButton') or obj:IsA('TextButton') then
+                        ignoreCloseCheck = true
+
+                        break
                     end
+                end
+            end
 
-                    local function isLibraryUI(obj)
-                        while obj do
-                            if obj == Library.ScreenGui then
+            if ignoreCloseCheck then
+                return
+            end
+
+            for _, popup in pairs(Library.Popups)do
+                if popup.Objects.Outline.Visible then
+                    local function isInsidePopupHierarchy(
+                        p,
+                        input
+                    )
+                        if Utility.MouseOver(p.Objects.Outline, input) then
+                            return true
+                        end
+
+                        for _, child in pairs(p.ChildPopups)do
+                            if child.Objects.Outline.Visible and isInsidePopupHierarchy(child, input) then
                                 return true
                             end
-
-                            obj = obj.Parent
                         end
 
                         return false
                     end
 
-                    local ignoreCloseCheck = false
-                    local guiObjectsAtPosition = game:GetService('CoreGui'):GetGuiObjectsAtPosition(input.Position.X, input.Position.Y)
+                    if not isInsidePopupHierarchy(popup, input) then
+                        local isChildOfActiveParent = false
 
-                    for _, obj in ipairs(guiObjectsAtPosition)do
-                        if isLibraryUI(obj) then
-                            if obj:IsA('ImageButton') or obj:IsA('TextButton') then
-                                ignoreCloseCheck = true
-
-                                break
-                            end
-                        end
-                    end
-
-                    if ignoreCloseCheck then
-                        return
-                    end
-
-                    for _, popup in pairs(Library.Popups)do
-                        if popup.Objects.Outline.Visible then
-                            local function isInsidePopupHierarchy(
-                                p,
-                                input
-                            )
-                                if Utility.MouseOver(p.Objects.Outline, input) then
+                        local function isInParentOfPopup(
+                            p,
+                            input
+                        )
+                            if p.ParentPopup and p.ParentPopup.Objects.Outline.Visible then
+                                if Utility.MouseOver(p.ParentPopup.Objects.Outline, input) then
                                     return true
                                 end
 
-                                for _, child in pairs(p.ChildPopups)do
-                                    if child.Objects.Outline.Visible and isInsidePopupHierarchy(child, input) then
-                                        return true
-                                    end
-                                end
-
-                                return false
+                                return isInParentOfPopup(p.ParentPopup, input)
                             end
 
-                            if not isInsidePopupHierarchy(popup, input) then
-                                local isChildOfActiveParent = false
+                            return false
+                        end
 
-                                local function isInParentOfPopup(
-                                    p,
-                                    input
-                                )
-                                    if p.ParentPopup and p.ParentPopup.Objects.Outline.Visible then
-                                        if Utility.MouseOver(p.ParentPopup.Objects.Outline, input) then
-                                            return true
-                                        end
+                        if not isInParentOfPopup(popup, input) and popup.ParentElement then
+                            popup.Visible(false, nil, true)
 
-                                        return isInParentOfPopup(p.ParentPopup, input)
-                                    end
-
-                                    return false
-                                end
-
-                                if not isInParentOfPopup(popup, input) and popup.ParentElement then
-                                    popup.Visible(false, nil, true)
-
-                                    if popup.ParentElement.Objects and popup.ParentElement.Objects.Icon then
-                                        Library.ChangeObjectTheme(popup.ParentElement.Objects.Icon, {
-                                            ImageColor3 = 'Dark Text',
-                                        }, true)
-                                    end
-                                end
+                            if popup.ParentElement.Objects and popup.ParentElement.Objects.Icon then
+                                Library.ChangeObjectTheme(popup.ParentElement.Objects.Icon, {
+                                    ImageColor3 = 'Dark Text',
+                                }, true)
                             end
                         end
-                    end
-                    for _, dropdown in pairs(Library.Dropdowns)do
-                        if dropdown.Visible then
-                            if not Utility.MouseOver(dropdown.Popup.Outline, input) and not Utility.MouseOver(dropdown.Objects.Outline, input) then
-                                dropdown.Open()
-                            end
-                        end
-                    end
-                end))
-            end
-
-            local positionUpdater
-            positionUpdater = Utility.Signal(RunService.RenderStepped:Connect(function()
-                if Popup.Objects.Outline.Visible then
-                    local AbsolutePosition = Objects.Icon.AbsolutePosition
-                    local AbsoluteSize = Objects.Icon.AbsoluteSize
-                    
-                    local newPos = UDim2.new(0, AbsolutePosition.x, 0, AbsolutePosition.y + AbsoluteSize.y + 5)
-                    if Popup.Objects.Outline.Position ~= newPos then
-                        Popup.Objects.Outline.Position = newPos
                     end
                 end
-            end))
+            end
+            for _, dropdown in pairs(Library.Dropdowns)do
+                if dropdown.Visible then
+                    if not Utility.MouseOver(dropdown.Popup.Outline, input) and not Utility.MouseOver(dropdown.Objects.Outline, input) then
+                        dropdown.Open()
+                    end
+                end
+            end
+        end))
+    end
+
+    -- Use RenderStepped for position updates
+    local positionUpdater
+    positionUpdater = Utility.Signal(RunService.RenderStepped:Connect(function()
+        if Popup.Objects.Outline and Popup.Objects.Outline.Visible and Objects.Icon then
+            local AbsolutePosition = Objects.Icon.AbsolutePosition
+            local AbsoluteSize = Objects.Icon.AbsoluteSize
             
-            Popup._positionUpdater = positionUpdater
-
-            Utility.Signal(Objects.Icon.MouseButton1Click:Connect(function(
-            )
-                Cog.Visible = not Cog.Visible
-
-                local AbsolutePosition = Objects.Icon.AbsolutePosition
-                local AbsoluteSize = Objects.Icon.AbsoluteSize
-                local Position = Vector2.new(AbsolutePosition.x, AbsolutePosition.y + AbsoluteSize.y + 5)
-
-                Library.ChangeObjectTheme(Objects.Icon, {
-                    ImageColor3 = Cog.Visible and 'Text' or 'Dark Text',
-                }, true)
-
-                local stopPropagation = true
-
-                Popup.Visible(Cog.Visible, Position, stopPropagation)
-            end))
-
-            return Popup
+            if AbsolutePosition and AbsoluteSize then
+                local newPos = UDim2.new(0, AbsolutePosition.x, 0, AbsolutePosition.y + AbsoluteSize.y + 5)
+                if Popup.Objects.Outline.Position ~= newPos then
+                    Popup.Objects.Outline.Position = newPos
+                end
+            end
         end
+    end))
+    
+    Popup._positionUpdater = positionUpdater
+
+    Utility.Signal(Objects.Icon.MouseButton1Click:Connect(function(
+    )
+        Cog.Visible = not Cog.Visible
+
+        local AbsolutePosition = Objects.Icon.AbsolutePosition
+        local AbsoluteSize = Objects.Icon.AbsoluteSize
+        local Position = Vector2.new(AbsolutePosition.x or 0, (AbsolutePosition.y or 0) + (AbsoluteSize.y or 20) + 5)
+
+        Library.ChangeObjectTheme(Objects.Icon, {
+            ImageColor3 = Cog.Visible and 'Text' or 'Dark Text',
+        }, true)
+
+        local stopPropagation = true
+
+        Popup.Visible(Cog.Visible, Position, stopPropagation)
+    end))
+
+    return Popup
+end
         
         function Library.Toggle(self, cfg)
             cfg = cfg or {}
