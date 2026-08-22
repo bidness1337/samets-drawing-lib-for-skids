@@ -2036,81 +2036,58 @@ local Library = (function()
         })
         ZIndex = ZIndex + 1
         
-        -- Main container for the tab (transparent background - NO OUTLINE)
+        -- Main container for the tab (no background)
         Objects.Background = Utility.New('TextButton', {
             Name = 'Background',
-            Size = UDim2.new(1, 0, 1, 0),
+            Size = UDim2.new(1, 0, 0, 0),
             AutomaticSize = Enum.AutomaticSize.Y,
             BorderSizePixel = 0,
-            BackgroundTransparency = 1,
+            BackgroundTransparency = 1, -- Always transparent
             Text = '',
             AutoButtonColor = false,
             Style = Enum.ButtonStyle.Custom,
             Parent = Objects.Holder,
             ZIndex = ZIndex,
-            ClipsDescendants = false, -- Don't clip so glow can extend
+            ClipsDescendants = true,
         })
         ZIndex = ZIndex + 1
 
-        -- GLOW CONTAINER - positioned to the left of the text
-        Objects.GlowContainer = Utility.New('Frame', {
-            Name = 'GlowContainer',
-            BorderSizePixel = 0,
-            BackgroundTransparency = 1,
-            Size = UDim2.new(0, 3, 1, 0), -- Match the height of the background
+        -- Selection line (appears on the LEFT side when selected)
+        Objects.SelectionLine = Utility.New('Frame', {
+            Name = 'SelectionLine',
+            Size = UDim2.new(0, 3, 0, 0), -- 3px wide, auto height
             Position = UDim2.new(0, 0, 0, 0),
-            Parent = Objects.Background,
-            ZIndex = ZIndex,
-            ClipsDescendants = false,
-        })
-        ZIndex = ZIndex + 1
-
-        -- The main accent line
-        Objects.AccentLine = Utility.New('Frame', {
-            Name = 'AccentLine',
             BorderSizePixel = 0,
-            Size = UDim2.new(1, 0, 1, 0),
-            BackgroundTransparency = 1,
-            Parent = Objects.GlowContainer,
+            BackgroundTransparency = 1, -- Hidden by default
+            Parent = Objects.Background,
             ZIndex = ZIndex,
         }, {
             BackgroundColor3 = 'Accent',
         })
-
-        Utility.New('UICorner', {
-            Name = 'UICorner',
-            Parent = Objects.AccentLine,
-            CornerRadius = UDim.new(0, 2),
-        })
-
-        -- GLOW IMAGE - creates the glow effect around the line
-        Objects.Glow = Utility.New('ImageLabel', {
-            Name = 'Glow',
+        
+        -- Make the selection line match the height
+        Utility.Signal(Objects.Background:GetPropertyChangedSignal('AbsoluteSize'):Connect(function()
+            Objects.SelectionLine.Size = UDim2.new(0, 3, 1, 0)
+        end))
+        
+        ZIndex = ZIndex + 1
+        
+        -- Content container (with padding for the text/icon)
+        Objects.Content = Utility.New('Frame', {
+            Name = 'Content',
+            Size = UDim2.new(1, 0, 0, 0),
+            AutomaticSize = Enum.AutomaticSize.Y,
+            Position = UDim2.new(0, 8, 0, 0), -- Offset from left for the selection line
             BackgroundTransparency = 1,
-            Size = UDim2.new(1, 10, 1, 10), -- Slightly larger than the line
-            Position = UDim2.new(0, -5, 0, -5), -- Centered on the line
-            Image = 'rbxassetid://5028857105',
-            ImageTransparency = 1,
-            ScaleType = Enum.ScaleType.Slice,
-            SliceCenter = Rect.new(5, 5, 5, 5),
-            Parent = Objects.GlowContainer,
-            ZIndex = ZIndex - 1,
-        }, {
-            ImageColor3 = 'Accent',
-        })
-
-        -- Content layout (text and icon)
-        Utility.New('UIPadding', {
-            Name = 'UIPadding',
+            BorderSizePixel = 0,
             Parent = Objects.Background,
-            PaddingLeft = UDim.new(0, 12), -- Space for the line + glow
-            PaddingRight = UDim.new(0, 8),
-            PaddingTop = UDim.new(0, 4), -- Reduced padding
-            PaddingBottom = UDim.new(0, 4), -- Reduced padding
+            ZIndex = ZIndex,
         })
+        ZIndex = ZIndex + 1
+        
         Utility.New('UIListLayout', {
             Name = 'UIListLayout',
-            Parent = Objects.Background,
+            Parent = Objects.Content,
             FillDirection = Enum.FillDirection.Horizontal,
             SortOrder = Enum.SortOrder.LayoutOrder,
             Padding = UDim.new(0, 7),
@@ -2119,10 +2096,12 @@ local Library = (function()
         if cfg.icon then
             Objects.Icon = Utility.New('ImageLabel', {
                 Name = 'Icon',
-                Size = UDim2.new(0, 16, 0, 16), -- Fixed size
+                Size = UDim2.new(0, 20, 0, 20),
+                Position = UDim2.new(0, 0, 0, 0),
+                AutomaticSize = Enum.AutomaticSize.XY,
                 BackgroundTransparency = 1,
                 Image = cfg.icon,
-                Parent = Objects.Background,
+                Parent = Objects.Content,
                 ZIndex = ZIndex,
             }, {
                 ImageColor3 = 'Dark Text',
@@ -2139,18 +2118,18 @@ local Library = (function()
             Position = UDim2.new(0, 0, 0, 0),
             TextColor3 = Color3.fromRGB(255, 255, 255),
             Text = cfg.name,
-            Parent = Objects.Background,
+            Parent = Objects.Content,
             ZIndex = ZIndex,
-            AutomaticSize = Enum.AutomaticSize.XY,
         }, {
             TextColor3 = 'Dark Text',
         })
+        Objects.Text.Size = UDim2.new(0, Objects.Text.TextBounds.X, 0, Objects.Text.TextBounds.Y - 2)
 
-        -- Set icon size to match text height
         if Objects.Icon then
-            Objects.Icon.Size = UDim2.new(0, Objects.Text.TextBounds.Y - 2, 0, Objects.Text.TextBounds.Y - 2)
+            Objects.Icon.Size = UDim2.new(0, Objects.Text.TextBounds.Y, 0, Objects.Text.TextBounds.Y)
         end
 
+        -- Page creation
         Objects.Page = Utility.New('Frame', {
             Name = 'Page',
             BackgroundTransparency = 1,
@@ -2162,7 +2141,7 @@ local Library = (function()
         })
         ZIndex = ZIndex + 1
         
-        -- Left side container
+        -- Left and Right sections
         Objects.Left = Utility.New('Frame', {
             Name = 'Left',
             BackgroundTransparency = 1,
@@ -2185,7 +2164,6 @@ local Library = (function()
 
         Tab.left = Objects.Left
         
-        -- Right side container
         Objects.Right = Utility.New('Frame', {
             Name = 'Right',
             BackgroundTransparency = 1,
@@ -2216,63 +2194,34 @@ local Library = (function()
             return
         end
 
-        -- Animate the accent line with glow
+        -- Show/hide the selection line
         if status then
-            -- Show the line with glow
-            Library.Tween(Objects.AccentLine, {
+            -- Selected: show the accent line
+            Objects.SelectionLine.BackgroundTransparency = 0
+            Library.Tween(Objects.SelectionLine, {
                 BackgroundTransparency = 0,
             })
-            
-            -- Glow appears
-            Library.Tween(Objects.Glow, {
-                ImageTransparency = 0.3,
-                Size = UDim2.new(1, 10, 1, 10),
-            })
-            
-            -- Pulsing glow animation
-            task.spawn(function()
-                local pulseCount = 0
-                while Objects.Page.Visible do
-                    task.wait(0.8)
-                    if Objects.Page.Visible then
-                        pulseCount = pulseCount + 1
-                        -- Pulse out
-                        Library.Tween(Objects.Glow, {
-                            ImageTransparency = 0.1,
-                            Size = UDim2.new(1, 14, 1, 14),
-                        }, TweenInfo.new(0.4, Enum.EasingStyle.Sine, Enum.EasingDirection.Out))
-                        
-                        task.wait(0.4)
-                        if Objects.Page.Visible then
-                            -- Pulse in
-                            Library.Tween(Objects.Glow, {
-                                ImageTransparency = 0.3,
-                                Size = UDim2.new(1, 10, 1, 10),
-                            }, TweenInfo.new(0.4, Enum.EasingStyle.Sine, Enum.EasingDirection.Out))
-                        end
-                    end
-                end
-            end)
+            Library.ChangeObjectTheme(Objects.Text, {
+                TextColor3 = 'Text',
+            }, true)
+            if Objects.Icon then
+                Library.ChangeObjectTheme(Objects.Icon, {
+                    ImageColor3 = 'Text',
+                }, true)
+            end
         else
-            -- Hide the line and glow
-            Library.Tween(Objects.AccentLine, {
+            -- Not selected: hide the accent line
+            Library.Tween(Objects.SelectionLine, {
                 BackgroundTransparency = 1,
             })
-            Library.Tween(Objects.Glow, {
-                ImageTransparency = 1,
-                Size = UDim2.new(1, 10, 1, 10),
-            })
-        end
-        
-        -- Update text color
-        Library.ChangeObjectTheme(Objects.Text, {
-            TextColor3 = status and 'Text' or 'Dark Text',
-        }, true)
-
-        if Objects.Icon then
-            Library.ChangeObjectTheme(Objects.Icon, {
-                ImageColor3 = status and 'Text' or 'Dark Text',
+            Library.ChangeObjectTheme(Objects.Text, {
+                TextColor3 = 'Dark Text',
             }, true)
+            if Objects.Icon then
+                Library.ChangeObjectTheme(Objects.Icon, {
+                    ImageColor3 = 'Dark Text',
+                }, true)
+            end
         end
 
         Objects.Page.Visible = status
@@ -2313,8 +2262,41 @@ local Library = (function()
         end
     end
 
-    Utility.Signal(Objects.Background.MouseButton1Click:Connect(function(
-    )
+    -- Hover effects
+    Utility.Signal(Objects.Background.MouseEnter:Connect(function()
+        if not Tab._isSelected then
+            Library.ChangeObjectTheme(Objects.Text, {
+                TextColor3 = 'Text',
+            }, true)
+            if Objects.Icon then
+                Library.ChangeObjectTheme(Objects.Icon, {
+                    ImageColor3 = 'Text',
+                }, true)
+            end
+        end
+    end))
+
+    Utility.Signal(Objects.Background.MouseLeave:Connect(function()
+        if not Tab._isSelected then
+            Library.ChangeObjectTheme(Objects.Text, {
+                TextColor3 = 'Dark Text',
+            }, true)
+            if Objects.Icon then
+                Library.ChangeObjectTheme(Objects.Icon, {
+                    ImageColor3 = 'Dark Text',
+                }, true)
+            end
+        end
+    end))
+
+    -- Override the Set function to track selection state
+    local originalSet = Tab.Set
+    Tab.Set = function(status, nested)
+        Tab._isSelected = status
+        originalSet(status, nested)
+    end
+
+    Utility.Signal(Objects.Background.MouseButton1Click:Connect(function()
         Tab.Set(true)
     end))
     table.insert(self.Tabs, Tab)
